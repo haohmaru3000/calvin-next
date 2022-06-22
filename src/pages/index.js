@@ -1,7 +1,9 @@
 import Head from "next/head";
 import Image from "next/image";
-import styles from "../../styles/Home.module.css";
 import Nav from "../components/Nav";
+import ProductListings from "../components/ProductListings";
+import { products } from "../data/products";
+import styles from "../styles/Home.module.css";
 
 export default function Home() {
   return (
@@ -13,7 +15,7 @@ export default function Home() {
       </Head>
       <Nav />
       <main className={styles.main}>
-        Hello
+        <ProductListings products={products} />
       </main>
 
       <footer className={styles.footer}>
