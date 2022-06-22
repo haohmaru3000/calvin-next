@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import { products } from "../../data/products";
 
-function ProductDetails() {
+const ProductDetails = () => {
   const router = useRouter();
   const { handle } = router.query;
+
+  if (!handle) return null;
   console.log(handle);
 
   let title = handle.split("-"); // split into array
@@ -19,6 +20,6 @@ function ProductDetails() {
   console.log("title2", title2);
 
   return <div>{title2}</div>;
-}
+};
 
 export default ProductDetails;
