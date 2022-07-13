@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { setLocalData } from "@/utils/helpers";
 
 const CartContext = createContext();
 const AddToCartContext = createContext();

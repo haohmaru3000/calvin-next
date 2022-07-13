@@ -1,11 +1,12 @@
 const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
+const apiVersion = process.env.NEXT_PUBLIC_SHOPIFY_API_VERSION;
 const storefrontAccessToken =
   process.env.NEXT_PUBLIC_SHOPIFY_STORE_FRONT_ACCESS_TOKEN;
 const collection = process.env.NEXT_PUBLIC_SHOPIFY_COLLECTION;
 
 async function callShopify(query) {
-  const fetchUrl = `https://${domain}/api/2021-01/graphql.json`;
-
+  const fetchUrl = `https://${domain}/api/${apiVersion}/graphql.json`;
+  
   const fetchOptions = {
     endpoint: fetchUrl,
     method: "POST",
@@ -14,7 +15,7 @@ async function callShopify(query) {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query }),
+    body: JSON.stringify({ query }), // THe part that relates to GraphQL query used in Insomenia
   };
 
   try {
@@ -28,6 +29,7 @@ async function callShopify(query) {
 }
 
 export async function getAllProductsInCollection() {
+  console.log(collection);
   const query = `{
       collectionByHandle(handle: "${collection}") {
         id
@@ -66,7 +68,7 @@ export async function getAllProductsInCollection() {
     }`;
   const response = await callShopify(query);
 
-  const allProducts = response.data.collectionByHandle.products.edges
+  const allProducts = response.data.collectionByHandle?.products.edges
     ? response.data.collectionByHandle.products.edges
     : [];
 
@@ -94,6 +96,7 @@ export async function getProductSlugs() {
   return slugs;
 }
 
+// slug, handle: a part of URL that identifies an Item
 export async function getProduct(handle) {
   const query = `{
       productByHandle(handle: "${handle}") {
