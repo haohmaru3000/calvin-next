@@ -1,7 +1,12 @@
 import { getProductSlugs, getProduct } from "@/lib/shopify";
+import ProductSection from "@/components/ProductSection";
 
 function ProductPage({ productData }) {
-  return <div></div>;
+  return (
+    <div className="min-h-screen py-12 sm:pt-20">
+      <ProductSection productData={productData} />
+    </div>
+  );
 }
 
 export async function getStaticPaths() {

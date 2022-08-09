@@ -4,6 +4,7 @@ import ProductListings from "@/components/ProductListings";
 import { getAllProductsInCollection } from "@/lib/shopify";
 import styles from "../styles/Home.module.css";
 import StoreHeading from "@/components/StoreHeading";
+import Footer from "@/components/Footer";
 
 function IndexPage({ products }) {
   return (
@@ -18,6 +19,7 @@ function IndexPage({ products }) {
         <StoreHeading />
         <ProductListings products={products} />
       </main>
+      <Footer />
     </div>
   );
 }
