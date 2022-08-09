@@ -6,7 +6,7 @@ const collection = process.env.NEXT_PUBLIC_SHOPIFY_COLLECTION;
 
 async function callShopify(query) {
   const fetchUrl = `https://${domain}/api/${apiVersion}/graphql.json`;
-  
+
   const fetchOptions = {
     endpoint: fetchUrl,
     method: "POST",
