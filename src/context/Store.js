@@ -1,5 +1,10 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { setLocalData } from "@/utils/helpers";
+import {
+  createShopifyCheckout,
+  updateShopifyCheckout,
+  setLocalData,
+  saveLocalData,
+} from "@/utils/helpers";
 
 const CartContext = createContext();
 const AddToCartContext = createContext();
@@ -9,7 +14,7 @@ export function useCartContext() {
   return useContext(CartContext);
 }
 
-export function useAddToCardContext() {
+export function useAddToCartContext() {
   return useContext(AddToCartContext);
 }
 
@@ -29,7 +34,7 @@ export function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [checkoutId, setCheckoutId] = useState("");
   const [checkoutUrl, setCheckoutUrl] = useState("");
-  const [isLoading, setisloading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // in-browser local storage initialization
@@ -54,15 +59,64 @@ export function CartProvider({ children }) {
 
   async function addToCart(newItem) {
     // here is where the detailed logic is implemented when someone clicks on "add" button
-    setisloading(true);
+    setIsLoading(true);
     // a whole bunch of memory, local storage AND remote API call is going to happen
+    // empty cart
+    if (cart.length === 0) {
+      setCart([...cart, newItem]);
 
+      const response = await createShopifyCheckout(newItem);
+      setCheckoutId(response.id);
+      setCheckoutUrl(response.webUrl);
+      saveLocalData(newItem, response.id, response.webUrl);
+    } else {
+      let newCart = [...cart];
+      let itemAdded = false;
+      // loop through all cart items to check if variant
+      // already exists and update quantity
+      newCart.map((item) => {
+        if (item.variantId === newItem.variantId) {
+          item.variantQuantity += newItem.variantQuantity;
+          itemAdded = true;
+        }
+      });
+
+      let newCartWithItem = [...newCart];
+      if (itemAdded) {
+      } else {
+        // if its a new item than add it to the end
+        newCartWithItem = [...newCart, newItem];
+      }
+
+      setCart(newCartWithItem);
+      await updateShopifyCheckout(newCartWithItem, checkoutId);
+      saveLocalData(newCartWithItem, checkoutId, checkoutUrl);
+    }
     // and when all these IO operations are done
-    setisloading(false);
+    setIsLoading(false);
   }
 
   async function updateCartItemQuantity(id, quantity) {
     // here is where the detailed logic is implemented when someone updates the quantity of a particular purchase
+    setIsLoading(true);
+    let newQuantity = Math.floor(quantity);
+    if (quantity === "") {
+      newQuantity = "";
+    }
+    let newCart = [...cart];
+    newCart.forEach((item) => {
+      if (item.variantId === id) {
+        item.variantQuantity = newQuantity;
+      }
+    });
+
+    // take out zeroes items
+    newCart = newCart.filter((i) => i.variantQuantity !== 0);
+    setCart(newCart);
+
+    await updateShopifyCheckout(newCart, checkoutId);
+    saveLocalData(newCart, checkoutId, checkoutUrl);
+    setIsLoading(false);
   }
 
   return (

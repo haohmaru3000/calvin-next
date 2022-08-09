@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
-// import { useCartContext } from "@/context/Store";
+import { useCartContext } from "@/context/Store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 function Nav() {
-  // const cart = useCartContext()[0];
-  // const [cartItems, setCartItems] = useState(0);
+  const cart = useCartContext()[0];
+  const [cartItems, setCartItems] = useState(0);
 
-  // useEffect(() => {
-  //   let numItems = 0;
-  //   cart.forEach((item) => {
-  //     numItems += item.variantQuantity;
-  //   });
-  //   setCartItems(numItems);
-  // }, [cart]);
+  useEffect(() => {
+    let numItems = 0;
+    cart.forEach((item) => {
+      numItems += item.variantQuantity;
+    });
+    setCartItems(numItems);
+  }, [cart]);
 
   return (
     <header className="border-b border-palette-lighter sticky top-0 z-20 bg-white">
@@ -30,7 +30,9 @@ function Nav() {
                 className="h-8 w-8 mr-1 object-contain"
                 src="/icons/icon.svg"
               />
-              <span className="text-xl font-primary font-bold tracking-tight pt-1"></span>
+              <span className="text-xl font-primary font-bold tracking-tight pt-1">
+                {process.env.siteTitle}
+              </span>
             </h1>
           </a>
         </Link>
@@ -41,6 +43,11 @@ function Nav() {
                 className="text-palette-primary w-6 m-auto"
                 icon={faShoppingCart}
               />
+              {cartItems === 0 ? null : (
+                <div className="absolute top-0 right-0 text-xs bg-yellow-300 text-gray-900 font-semibold rounded-full py-1 px-2 transform translate-x-10 -translate-y-3">
+                  {cartItems}
+                </div>
+              )}
             </a>
           </Link>
         </div>

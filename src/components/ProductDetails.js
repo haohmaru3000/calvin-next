@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BackToProductButton from "@/components/BackToProductButton";
 import ProductInfo from "@/components/ProductInfo";
-// import ProductForm from "@/components/ProductForm";
+import ProductForm from "@/components/ProductForm";
 
 function ProductDetails({ productData }) {
   const [variantPrice, setVariantPrice] = useState(
@@ -16,13 +16,13 @@ function ProductDetails({ productData }) {
         description={productData.description}
         price={variantPrice}
       />
-      {/* <ProductForm
+      <ProductForm
         title={productData.title}
         handle={productData.handle}
         variants={productData.variants.edges}
         mainImg={productData.images.edges[0].node}
         setVariantPrice={setVariantPrice}
-      /> */}
+      />
     </div>
   );
 }
